@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+    <script src="./script.js" type="module" defer></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+    <body>
+        <div class="intro">
+            <header>
+                <ul>
+                    <li><a class="links" href="#user"><button class="signbutton" type="button">Sign in</button></a></li>
+                <!-- botão de favoritos -->
+                <li><button id="favsBtn" class="icon-button" title="Favoritos"><i class="fa fa-star"></i></button></li>
+                <!-- botão do menu de filtros -->
+                <li><a href="#grid"><img id="appMenuBtn" class="grid" src="https://cdn3.iconfinder.com/data/icons/navigation-and-settings/24/Material_icons-01-11-512.png" title="Filtros/Categorias"></a></li>
+                    <li><a href="#gmail">Email</a></li>
+                </ul>  
+            </header>
+            <div class="logo">
+                <img class="ufpr" alt="UFPR" src="https://i.postimg.cc/WzLsCwtW/Brasoes-UFPR.png">
+                <img class="search-ufpr" alt="Search" src="https://i.postimg.cc/L6GJRLwp/Search-8-23-2025.png">
+            </div>
+            <div class="bar">
+            <input class="searchbar" type="text" title="Search">
+            <a href="#"> <img class="voice" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Google_mic.svg/716px-Google_mic.svg.png" title="Search by Voice"></a>
+            </div>
+            <div class="buttons">
+            <button class="button" type="button">UFPR Search</button>
+            </div>
+        </div>
+
+        <!-- LATERAL: Resultados estilo Google -->
+        <aside class="side-results" role="complementary" aria-label="Resultados relacionados">
+          <div class="side-results__header">Resultados para: <strong>Serviços essenciais do estudante UFPR</strong></div>
+          <ol class="results-list">
+            <li class="result-item">
+              <a class="result-title" href="#" title="Notas, Histórico e IRA | SIGA/UFPR">Notas, Histórico e IRA | SIGA/UFPR</a>
+              <div class="result-url">siga.ufpr.br/aluno</div>
+              <p class="result-snippet">Acesse seu histórico e consulte o Índice de Rendimento Acadêmico (IRA) no SIGA. Matrículas, notas e documentos acadêmicos em um só lugar.</p>
+            </li>
+            <li class="result-item">
+              <a class="result-title" href="#" title="Cardápio e Benefícios | Restaurantes Universitários (P4E)">Cardápio e Benefícios | Restaurantes Universitários (P4E)</a>
+              <div class="result-url">p4e.ufpr.br/ru</div>
+              <p class="result-snippet">Veja o cardápio do dia, horários e informações de acesso aos RUs. Auxílios e políticas de permanência estudantil.</p>
+            </li>
+            <li class="result-item">
+              <a class="result-title" href="#" title="Horários do Transporte Intercampi | UFPR">Horários do Transporte Intercampi | UFPR</a>
+              <div class="result-url">ufpr.br/transporte</div>
+              <p class="result-snippet">Rotas e horários dos ônibus intercampi entre os setores. Atualizações e avisos de operação.</p>
+            </li>
+          </ol>
+        </aside>
+
+        <!-- TOASTS: notificações empilhadas (inferior direito) -->
+        <div class="toast-stack" aria-live="polite" aria-atomic="true">
+          <div class="toast" id="toast-help">
+            <div class="toast-body">
+              <strong>Primeira vez por aqui?</strong><br>
+              Quer uma ajuda rápida para encontrar seus sistemas?
+            </div>
+            <div class="toast-actions">
+              <button class="btn btn-primary" id="btn-start-tour">Sim, mostrar tour</button>
+              <button class="btn" id="btn-dismiss-help">Agora não</button>
+            </div>
+          </div>
+          <div class="toast" id="toast-ru">
+            <div class="toast-body">
+              <strong>Você acessou o RU recentemente.</strong><br>Adicionar aos favoritos?
+            </div>
+            <div class="toast-actions">
+              <button class="btn btn-star" id="btn-add-ru"><i class="fa fa-star"></i> Favoritar RU</button>
+              <button class="btn" id="btn-dismiss-ru">Fechar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popover: Filtros por categoria -->
+        <div id="filterPopover" class="popover hidden" role="dialog" aria-label="Filtros de categoria">
+            <h4>Filtrar por categoria</h4>
+            <label data-cat="transporte"><input type="checkbox" data-cat="transporte" checked> Transporte</label>
+            <label data-cat="alimentacao"><input type="checkbox" data-cat="alimentacao" checked> Alimentação</label>
+            <label data-cat="estagio"><input type="checkbox" data-cat="estagio" checked> Estágio</label>
+            <label data-cat="biblioteca"><input type="checkbox" data-cat="biblioteca" checked> Biblioteca</label>
+            <label data-cat="secretaria"><input type="checkbox" data-cat="secretaria" checked> Secretaria</label>
+        </div>
+
+        <!-- Popover: Favoritos -->
+        <div id="favsPopover" class="popover hidden" role="dialog" aria-label="Favoritos">
+            <h4>Seus favoritos</h4>
+            <ul id="favsList" class="popover-list">
+                <!-- preenchido via JS -->
+            </ul>
+        </div>
+
+        <div class="spin-container">
+            <div class="central-circle"><a href="#"><span class="words"><i class="fa fa-globe fa-spin"></i></span></a>
+    
+            </div>
+            <div id="rotator">
+                <div
+                  class="small-circle cat-transporte"
+                  data-category="transporte"
+                  data-label="Transporte Intercampi"
+                  data-favorite="true">
+                  <a href="#" title="Transporte Intercampi">
+                    <img class="circle-img"
+                         src="https://i.postimg.cc/WzLsCwtW/Brasoes-UFPR.png"
+                         alt="Transporte Intercampi">
+                  </a>
+                </div>
+
+                <div
+                  class="small-circle cat-alimentacao"
+                  data-category="alimentacao"
+                  data-label="Restaurante Universitário">
+                  <a href="#" title="Restaurante Universitário">
+                    <img class="circle-img"
+                         src="https://i.postimg.cc/bN3SDJvC/Screenshot-10.png"
+                         alt="Restaurante Universitário">
+                  </a>
+                </div>
+
+                <div
+                  class="small-circle cat-estagio"
+                  data-category="estagio"
+                  data-label="Portal de Estágios">
+                  <a href="#" title="Portal de Estágios">
+                    <img class="circle-img"
+                         src="https://i.postimg.cc/Y0xGx2zS/s.png"
+                         alt="Portal de Estágios">
+                  </a>
+                </div>
+
+                <div
+                  class="small-circle cat-biblioteca"
+                  data-category="biblioteca"
+                  data-label="Biblioteca / Catálogo">
+                  <a href="#" title="Biblioteca / Catálogo">
+                    <img class="circle-img"
+                         src="https://i.postimg.cc/159N36yV/images-1-removebg-preview.png"
+                         alt="Biblioteca / Catálogo">
+                  </a>
+                </div>
+
+                <div
+                  class="small-circle cat-secretaria"
+                  data-category="secretaria"
+                  data-label="Secretaria Online">
+                  <a href="#" title="Secretaria Online">
+                    <img class="circle-img"
+                         src="https://i.postimg.cc/XqWBFBFh/images-1.png"
+                         alt="Secretaria Online">
+                  </a>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

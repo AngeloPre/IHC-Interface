@@ -1,0 +1,498 @@
+/* Paleta por categoria */
+:root{
+  --cat-transporte:  #2563eb; /* azul */
+  --cat-alimentacao: #ef4444; /* vermelho */
+  --cat-estagio:     #16a34a; /* verde */
+  --cat-biblioteca:  #7c3aed; /* roxo */
+  --cat-secretaria:  #f59e0b; /* âmbar */
+  --brand-blue:      #1a73e8;
+  --circle-size: 84px; /* ex.: 84px ~ bom p/ logos; aumente se quiser */
+  --orbit-radius: 140px;
+}
+.hidden{ display:none; }
+.icon-button{
+  background: transparent;
+  border: 0;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+/*The Orbital Spin*/
+ @-moz-keyframes circle { 
+    from {
+        -moz-transform:rotate(360deg);
+    }
+    to {
+        -moz-transform:rotate(0deg);
+    }
+}
+@-o-keyframes circle {
+    from {
+        -o-transform:rotate(360deg);
+    }
+    to {
+        -o-transform:rotate(0deg);
+    }
+}
+@-webkit-keyframes circle {
+    from {
+        -webkit-transform:rotate(360deg);
+    }
+    to {
+        -webkit-transform:rotate(0deg);
+    }
+}
+@keyframes circle {
+    from {
+        transform:rotate(360deg);
+    }
+    to {
+        transform:rotate(0deg);
+    }
+}
+@-moz-keyframes inner-circle {
+    from {
+        -moz-transform:rotate(-360deg);
+    }
+    to {
+        -moz-transform:rotate(0deg);
+    }
+}
+@-webkit-keyframes inner-circle {
+    from {
+        -webkit-transform:rotate(-360deg);
+    }
+    to {
+        -webkit-transform:rotate(0deg);
+    }
+}
+@-o-keyframes inner-circle {
+    from {
+        -o-transform:rotate(-360deg);
+    }
+    to {
+        -o-transform:rotate(0deg);
+    }
+}
+@keyframes inner-circle {
+    from {
+        transform:rotate(-360deg);
+    }
+    to {
+        transform:rotate(0deg);
+    }
+}
+
+/*Some Font Awesomeness*/
+
+.fa-globe {
+  font-size: 150px !important;
+  text-shadow: 3px 4px 12px #2C2D2E;
+}
+
+ .fa-globe.fa-spin {
+  -webkit-animation: spin 60s infinite linear;
+  -moz-animation: spin 60s infinite linear;
+  -o-animation: spin 60s infinite linear;
+  animation: spin 60s infinite linear;
+}
+
+/*.central-circle .fa-spin:hover {
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+}*/
+
+
+
+#rotator {
+    width:350px;
+    height:350px;
+    margin:0 auto;
+    font-size:10px;
+    line-height:1;
+    -moz-animation: circle 60s linear infinite;
+    -webkit-animation:circle 60s linear infinite;
+    -o-animation: circle 60s linear infinite;
+    animation: circle 60s linear infinite;
+    transform-origin: 50% 50%;
+    /*Borders visible to view mechanics*/
+    border-radius: 2px;
+}
+/*
+#rotator:hover {
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+}*/
+#rotator > div {
+    -moz-animation: inner-circle 60s linear infinite;
+    -o-animation: inner-circle 60s linear infinite;
+    -webkit-animation: inner-circle 60s linear infinite;
+    animation: inner-circle 60s linear infinite;
+    background-color:#e1e1e1;
+    width: var(--circle-size);
+    height: var(--circle-size);
+    border-radius: 100%;
+    text-rendering: geometricPrecision;
+}
+/*#rotator:hover > div {
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+}*/
+
+.spin-container {
+    position: relative;
+    height: 350px;
+    width: 350px;
+    overflow: visible;
+    margin: 50px auto;
+    /*Borders visible to view mechanics*/
+    border-radius: 2px;
+}
+.central-circle {
+    display: table;
+    position: absolute;
+    border-radius: 100%;
+    width: 150px;
+    height: 150px;
+    left: 100px;
+    top: 100px;
+}
+
+.central-circle a {
+  color: #333;
+    text-decoration: none;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 2px;
+    position: relative;
+}
+
+/* The outer limits*/
+
+.small-circle {
+    display: table;
+    box-shadow: 2px 2px 6px #2C2D2E;
+    background: -webkit-radial-gradient(100px 100px, circle, #BBB, #D8D8D8);
+    background: -moz-radial-gradient(100px 100px, circle, #BBB, #D8D8D8);
+    background: radial-gradient(100px 100px, circle, #BBB, #D8D8D8);
+}
+.small-circle a {
+    color: inherit;
+    text-decoration: none;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+
+}
+
+.circle-img{
+  width: calc(var(--circle-size) - 10px);
+  height: calc(var(--circle-size) - 10px);
+  border-radius: 50%;
+  display: block;
+  margin: 5px auto;
+  object-fit: cover;
+}
+
+/* Anel colorido por categoria */
+.cat-transporte { border: 3px solid var(--cat-transporte); }
+.cat-alimentacao{ border: 3px solid var(--cat-alimentacao); }
+.cat-estagio    { border: 3px solid var(--cat-estagio); }
+.cat-biblioteca { border: 3px solid var(--cat-biblioteca); }
+.cat-secretaria { border: 3px solid var(--cat-secretaria); }
+
+/* Popovers (menu e favoritos) */
+.popover{
+  position: absolute;
+  top: 60px;           /* abaixo do header */
+  right: 20px;
+  width: 260px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  padding: 12px;
+  z-index: 1000;
+}
+.popover h4{
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.popover label{
+  display: block;
+  font-size: 14px;
+  padding: 6px 0 10px 0;
+  cursor: pointer;
+  border-bottom: 5px solid transparent; /* base para o highlight por categoria */
+}
+/* highlight por categoria (cor combina com a borda das esferas) */
+.popover label[data-cat="transporte"]  { border-bottom-color: var(--cat-transporte); }
+.popover label[data-cat="alimentacao"] { border-bottom-color: var(--cat-alimentacao); }
+.popover label[data-cat="estagio"]     { border-bottom-color: var(--cat-estagio); }
+.popover label[data-cat="biblioteca"]  { border-bottom-color: var(--cat-biblioteca); }
+.popover label[data-cat="secretaria"]  { border-bottom-color: var(--cat-secretaria); }
+
+/* espaço entre itens */
+.popover label + label{
+  margin-top: 6px;
+}
+.popover-list{
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  max-height: 260px;
+  overflow: auto;
+}
+.popover-item{ padding: 4px 0; }
+.popover-link{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #111827;
+  font-size: 14px;
+  text-align: left;          /* garante alinhamento de texto à esquerda */
+}
+/* reforça para não ser sobrescrito por regras globais acidentais */
+.popover-list li a.popover-link{
+  display: flex !important;
+}
+.popover-thumb{
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+.words {
+    position: relative;
+    z-index: 999;
+}
+/*The Following is just fluff, ignore or delete it as desired*/
+ body {
+    background: #F9FAFA;
+ }
+
+.intro {
+    display: block;
+    max-width: 100%;
+    text-align: center;
+    padding: 2px;
+}
+.intro p {
+    color: #f7f7f7;
+    font-size: 12px;
+    line-height: 80%;
+}
+
+/* Aqui comeca a estilizacao da search bar estilo google  */
+
+.intro header ul {
+  list-style-type: none;
+  overflow: hidden;
+}
+
+.intro header li {
+  float: right;
+}
+
+.intro header li a {
+  color: #000;
+  display: block;
+  text-align: center;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-size:14px;
+}
+.intro header li a:hover {
+  text-decoration: underline;
+}
+.grid{
+  height:23px;
+  position:relative;
+  bottom:4px;
+}
+.signbutton{
+  background-color: #4885ed;
+  color: #fff;
+  border:none;
+  border-radius:3px;
+  padding:7px 10px;
+  position:relative;
+  bottom:7px;
+  font-weight:bold;
+}
+
+/* ========= LATERAL (Resultados estilo Google) ========= */
+.side-results{
+  position: absolute;
+  top: 10px;              /* abaixo do cabeçalho/logo */
+  left: 10px;
+  height: 95vh;
+  width: 360px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+  padding: 16px 16px 8px;
+  overflow-y: auto;
+  z-index: 5;             /* abaixo dos popovers/toasts */
+}
+.side-results__header{
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+.results-list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.result-item{ padding: 10px 0 14px; border-bottom: 1px solid #f3f4f6; }
+.result-item:last-child{ border-bottom: 0; }
+.result-title{
+  font-size: 18px;
+  line-height: 1.2;
+  color: var(--brand-blue);
+  text-decoration: none;
+}
+.result-title:hover{ text-decoration: underline; }
+.result-url{
+  font-size: 13px;
+  color: #166534;       /* verde escuro (URL) */
+  margin: 2px 0 4px;
+}
+.result-snippet{
+  font-size: 14px;
+  color: #374151;
+  margin: 0;
+}
+
+/* ========= TOASTS (notificações inferiores) ========= */
+.toast-stack{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 2000;
+}
+.toast{
+  width: 320px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  overflow: hidden;
+}
+.toast-body{
+  padding: 12px 14px 4px;
+  font-size: 14px;
+  color: #111827;
+}
+.toast-actions{
+  padding: 8px 14px 12px;
+  display: flex;
+  gap: 8px;
+}
+.btn{
+  appearance: none;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-primary{
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+}
+.btn-star{ display:flex; align-items:center; gap:6px; }
+
+/* alinhamento do ícone de grid e estrela */
+.grid{ cursor:pointer; }
+.icon-button .fa-star{
+  font-size:16px;
+}
+.logo{
+  margin-top:100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bar{
+  margin:0 auto;
+  width:575px;
+  border-radius:30px;
+  border:1px solid #dcdcdc;
+}
+.bar:hover{
+  box-shadow: 1px 1px 8px 1px #dcdcdc;
+}
+.bar:focus-within{
+  box-shadow: 1px 1px 8px 1px #dcdcdc;
+  outline:none;
+}
+.searchbar{
+  height:45px;
+  border:none;
+  width:500px;
+  font-size:16px;
+  outline: none;
+  background-color: #F9FAFA;
+}
+.voice{
+  height:20px;
+  position:relative;
+  top:5px;
+  left:10px;
+}
+.buttons{
+  margin-top:30px;
+}
+.button{
+  background-color: #ebebeb;
+  border:none;
+  color:#505050;
+  font-size:15px;
+  padding: 10px 20px;
+  margin:5px;
+  border-radius:4px;
+  outline:none;
+}
+.button:hover{
+  border: 1px solid #c8c8c8;
+  padding: 9px 19px;
+  color:#808080;
+}
+.button:focus{
+  border:1px solid #4885ed;
+  padding: 9px 19px;
+}
+
+.ufpr {
+    max-height: 150px;
+}
+.search-ufpr {
+    max-height: 100px;
+}
+/* ajuda a posicionar corretamente o popover em telas pequenas */
+@media (max-width: 640px){
+  .popover{ right: 8px; left: 8px; width: auto; }
+  .side-results{
+    position: static;
+    width: auto;
+    height: auto;
+  }
+}
