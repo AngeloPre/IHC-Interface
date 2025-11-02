@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,7 @@
             <header>
                 <ul>
                   <!-- BOTÃO SIGN IN (estado inicial) -->
-                  <li><a class="links" href="#user"><button class="signbutton" id="signInBtn" type="button">Sign in</button></a></li>
+                  <li><a class="links" href="#user" data-ui="true"><button class="signbutton" id="signInBtn" type="button">Sign in</button></a></li>
                   <!-- AVATAR DO USUÁRIO (visível após login) -->
                   <li><button
                       id="userBtn"
@@ -31,7 +31,7 @@
                 <!-- botão de favoritos -->
                 <li><button id="favsBtn" class="icon-button" title="Favoritos"><i class="fa fa-star"></i></button></li>
                 <!-- botão do menu de filtros -->
-                <li><a href="#grid"><img id="appMenuBtn" class="grid" src="https://cdn3.iconfinder.com/data/icons/navigation-and-settings/24/Material_icons-01-11-512.png" title="Filtros/Categorias"></a></li>
+                <li><a href="./" data-ui="true"><img id="appMenuBtn" class="grid" src="https://cdn3.iconfinder.com/data/icons/navigation-and-settings/24/Material_icons-01-11-512.png" title="Filtros/Categorias"></a></li>
                     <li><a class="result-title" href="https://login.microsoftonline.com/" target="_blank" rel="noopener noreferrer" title="Login Microsoft (SSO UFPR)">Email</a></li>
                 </ul>  
             </header>
@@ -206,7 +206,7 @@
               <span class="user-avatar user-avatar--lg">A</span>
               <span class="user-card__camera" aria-hidden="true"></span>
             </div>
-            <button class="user-card__settings"><i class="fa fa-cog"></i> Site Settings</button>
+            <button class="user-card__settings" id="openSettings"><i class="fa fa-cog"></i> Site Settings</button>
             <div class="user-card__chips">
               <span class="chip">GRR20240734</span>
               <span class="chip">IRA: 94.8</span>
@@ -218,6 +218,13 @@
                 <span></span>
               </div>
               <button class="btn btn-ghost" id="btnSignOut"><i class="fa fa-sign-out"></i> Sign out</button>
+            </div>
+            <div class="user-card__row user-card__shortcuts">
+              <label class="toggle">
+                <input type="checkbox" id="shortcutsToggle" checked aria-describedby="shortcutsHint">
+                <span>Atalhos: <strong id="shortcutsState">ON</strong></span>
+              </label>
+              <small id="shortcutsHint" class="muted">Pressione “?” para ver a lista.</small>
             </div>
           </div>
         </div>
@@ -286,6 +293,58 @@
         </div>
         <!-- Botão flutuante de ajuda/tour -->
          <button id="helpFab" class="help-fab" aria-label="Ajuda e tour">?</button>
+
+         <div id="helpMenu" class="help-menu hidden" role="menu" aria-label="Ajuda">
+          <button class="help-menu__item" id="helpMenuBeginner">📘 Tutorial para iniciantes</button>
+          <button class="help-menu__item" id="helpMenuShortcuts">⌨️ Atalhos para veteranos</button>
+        </div>
+
+        <!-- Dialog: Site Settings -->
+        <div id="settingsDialog" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+          <div class="modal__backdrop" data-close="settingsDialog"></div>
+          <div class="modal__card" role="document">
+            <div class="modal__header">
+              <h3 id="settingsTitle">Configurações do site</h3>
+              <button class="modal__close" data-close="settingsDialog" aria-label="Fechar">×</button>
+            </div>
+            <div class="modal__content">
+              <div class="setting-row">
+                <label class="setting-label" for="motionToggleBtn">Rotação das animações</label>
+                <div id="motionSwitch" class="switch-no-icon" aria-label="Alternar rotação das animações">
+                  <button type="button" id="motionToggleBtn"></button>
+                  <span></span>
+                </div>
+              </div>
+              <div class="setting-row">
+                <label class="setting-label" for="langSelect">Linguagem:</label>
+                <select id="langSelect">
+                  <option value="pt-BR" selected>Português</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dialog: atalhos -->
+        <div id="shortcutsDialog" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle">
+          <div class="modal__backdrop" data-close="shortcutsDialog"></div>
+          <div class="modal__card" role="document">
+            <div class="modal__header">
+              <h3 id="shortcutsTitle">Atalhos de teclado</h3>
+              <button class="modal__close" data-close="shortcutsDialog" aria-label="Fechar">×</button>
+            </div>
+            <div class="modal__content">
+              <ul class="shortcuts-list">
+                <li><kbd>/</kbd> focar na busca</li>
+                <li><kbd>f</kbd> abrir Favoritos</li>
+                <li><kbd>g</kbd> abrir Filtros</li>
+                <li><kbd>?</kbd> abrir esta ajuda</li>
+              </ul>
+              <p class="muted">Para ativar/desativar, abra seu avatar e alterne <strong>Atalhos: ON/OFF</strong>.</p>
+            </div>
+          </div>
+        </div>
     </body>
 
 </html>
