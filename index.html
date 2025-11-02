@@ -6,19 +6,33 @@
     <title>Document</title>
     <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
-    <script src="./script.js" type="module" defer></script>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/boarding.js/styles/main.css" />
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/boarding.js/styles/themes/basic.css"
+    />
+    <script src="./script.js" type="module" defer></script>
 </head>
     <body>
         <div class="intro">
             <header>
                 <ul>
-                    <li><a class="links" href="#user"><button class="signbutton" type="button">Sign in</button></a></li>
+                  <!-- BOTÃO SIGN IN (estado inicial) -->
+                  <li><a class="links" href="#user"><button class="signbutton" id="signInBtn" type="button">Sign in</button></a></li>
+                  <!-- AVATAR DO USUÁRIO (visível após login) -->
+                  <li><button
+                      id="userBtn"
+                      class="user-avatar-button hidden"
+                      title="Conta do usuário"
+                      aria-haspopup="dialog"
+                      aria-expanded="false"
+                      aria-controls="userPopover">A</button></li>
                 <!-- botão de favoritos -->
                 <li><button id="favsBtn" class="icon-button" title="Favoritos"><i class="fa fa-star"></i></button></li>
                 <!-- botão do menu de filtros -->
                 <li><a href="#grid"><img id="appMenuBtn" class="grid" src="https://cdn3.iconfinder.com/data/icons/navigation-and-settings/24/Material_icons-01-11-512.png" title="Filtros/Categorias"></a></li>
-                    <li><a href="#gmail">Email</a></li>
+                    <li><a class="result-title" href="https://login.microsoftonline.com/" target="_blank" rel="noopener noreferrer" title="Login Microsoft (SSO UFPR)">Email</a></li>
                 </ul>  
             </header>
             <div class="logo">
@@ -35,23 +49,111 @@
         </div>
 
         <!-- LATERAL: Resultados estilo Google -->
-        <aside class="side-results" role="complementary" aria-label="Resultados relacionados">
+        <aside id="sideResults" class="side-results" role="complementary" aria-label="Resultados relacionados">
           <div class="side-results__header">Resultados para: <strong>Serviços essenciais do estudante UFPR</strong></div>
           <ol class="results-list">
             <li class="result-item">
-              <a class="result-title" href="#" title="Notas, Histórico e IRA | SIGA/UFPR">Notas, Histórico e IRA | SIGA/UFPR</a>
-              <div class="result-url">siga.ufpr.br/aluno</div>
-              <p class="result-snippet">Acesse seu histórico e consulte o Índice de Rendimento Acadêmico (IRA) no SIGA. Matrículas, notas e documentos acadêmicos em um só lugar.</p>
+              <a class="result-title" href="https://siga.ufpr.br/siga/" target="_blank" rel="noopener noreferrer" title="SIGA (Acesso e serviços acadêmicos)">
+                SIGA
+              </a>
+              <div class="result-url">siga.ufpr.br/siga</div>
+              <p class="result-snippet">A partir de agora o acesso ao SIGA deve ser feito pelo Portal de Sistemas. Histórico, matrículas, notas e autenticação de documentos.</p>
             </li>
+            <!-- Portal de Sistemas -->
             <li class="result-item">
-              <a class="result-title" href="#" title="Cardápio e Benefícios | Restaurantes Universitários (P4E)">Cardápio e Benefícios | Restaurantes Universitários (P4E)</a>
-              <div class="result-url">p4e.ufpr.br/ru</div>
-              <p class="result-snippet">Veja o cardápio do dia, horários e informações de acesso aos RUs. Auxílios e políticas de permanência estudantil.</p>
+              <a class="result-title" href="https://sistemas.ufpr.br/" target="_blank" rel="noopener noreferrer" title="Portal de Sistemas da UFPR">
+                Portal de Sistemas
+              </a>
+              <div class="result-url">sistemas.ufpr.br</div>
+              <p class="result-snippet">Acesso central aos sistemas da UFPR e ao SIGA. A antiga intranet está sendo descontinuada gradativamente.</p>
             </li>
+            <!-- UFPR Virtual (Moodle) -->
             <li class="result-item">
-              <a class="result-title" href="#" title="Horários do Transporte Intercampi | UFPR">Horários do Transporte Intercampi | UFPR</a>
-              <div class="result-url">ufpr.br/transporte</div>
-              <p class="result-snippet">Rotas e horários dos ônibus intercampi entre os setores. Atualizações e avisos de operação.</p>
+              <a class="result-title" href="https://ufprvirtual.ufpr.br/" target="_blank" rel="noopener noreferrer" title="UFPR Virtual (Moodle)">
+                UFPR Virtual: Página inicial
+              </a>
+              <div class="result-url">ufprvirtual.ufpr.br</div>
+              <p class="result-snippet">Moodle oficial da UFPR para educação a distância, aulas híbridas e apoio ao ensino presencial.</p>
+            </li>
+            <!-- Microsoft Online (SSO) -->
+            <li class="result-item">
+              <a class="result-title" href="https://login.microsoftonline.com/" target="_blank" rel="noopener noreferrer" title="Login Microsoft (SSO UFPR)">
+                Sign in – Microsoft
+              </a>
+              <div class="result-url">login.microsoftonline.com</div>
+              <p class="result-snippet">Autenticação SSO (SAML) com sua conta institucional para acesso a serviços Microsoft 365.</p>
+            </li>
+            <!-- Restaurante Universitário -->
+            <li class="result-item">
+              <a class="result-title" href="https://proad.ufpr.br/ru/" target="_blank" rel="noopener noreferrer" title="Restaurante Universitário (RU)">
+                Restaurante Universitário – Pró-Reitoria de Administração
+              </a>
+              <div class="result-url">proad.ufpr.br/ru</div>
+              <p class="result-snippet">Cardápio, horários, valores e orientações de acesso aos Restaurantes Universitários.</p>
+            </li>
+            <!-- Ônibus Intercampi -->
+            <li class="result-item">
+              <a class="result-title" href="https://proad.ufpr.br/centran/sobre/onibus-intercampi/" target="_blank" rel="noopener noreferrer" title="Ônibus Intercampi UFPR">
+                Ônibus Intercampi – CENTRAN/UFPR
+              </a>
+              <div class="result-url">proad.ufpr.br/centran/sobre/onibus-intercampi</div>
+              <p class="result-snippet">Horários e rotas das linhas Intercampi. Atualizações e avisos de operação.</p>
+            </li>
+            <!-- P4E -->
+            <li class="result-item">
+              <a class="result-title" href="https://p4e.ufpr.br/" target="_blank" rel="noopener noreferrer" title="P4E – Permanência Estudantil">
+                P4E – UFPR
+              </a>
+              <div class="result-url">p4e.ufpr.br</div>
+              <p class="result-snippet">Pró-Reitoria de Pertencimento e Políticas de Permanência Estudantil. Auxílios, editais e informações.</p>
+            </li>
+            <!-- SiBi -->
+            <li class="result-item">
+              <a class="result-title" href="https://bibliotecas.ufpr.br/" target="_blank" rel="noopener noreferrer" title="Sistema de Bibliotecas da UFPR (SiBi)">
+                Sistema de Bibliotecas (SiBi) da UFPR
+              </a>
+              <div class="result-url">bibliotecas.ufpr.br</div>
+              <p class="result-snippet">Catálogo, serviços, acesso remoto a bases e orientações para usuários do SiBi.</p>
+            </li>
+            <!-- UFPR Internacional -->
+            <li class="result-item">
+              <a class="result-title" href="https://internacional.ufpr.br/portal/" target="_blank" rel="noopener noreferrer" title="UFPR Internacional">
+                UFPR Internacional
+              </a>
+              <div class="result-url">internacional.ufpr.br/portal</div>
+              <p class="result-snippet">Mobilidade acadêmica, editais e informações para estudantes e pesquisadores internacionais.</p>
+            </li>
+            <!-- PROGRAP – COAFE -->
+            <li class="result-item">
+              <a class="result-title" href="https://prograp.ufpr.br/coafe/" target="_blank" rel="noopener noreferrer" title="PROGRAP – COAFE">
+                PROGRAP – COAFE
+              </a>
+              <div class="result-url">prograp.ufpr.br/coafe</div>
+              <p class="result-snippet">Página da COAFE na PROGRAP com informações institucionais e serviços.</p>
+            </li>
+            <!-- PROGEPE – CASA 3 -->
+            <li class="result-item">
+              <a class="result-title" href="https://progepe.ufpr.br/progepe/caiss/casa3/" target="_blank" rel="noopener noreferrer" title="PROGEPE – Casa 3">
+                Unidade Centro de Atenção à Saúde – Casa 3 (PROGEPE)
+              </a>
+              <div class="result-url">progepe.ufpr.br/progepe/caiss/casa3</div>
+              <p class="result-snippet">Atendimento ambulatorial e informações da Casa 3 vinculada à PROGEPE.</p>
+            </li>
+            <!-- PROGEPE – CASA 4 -->
+            <li class="result-item">
+              <a class="result-title" href="https://progepe.ufpr.br/progepe/caiss/casa4/" target="_blank" rel="noopener noreferrer" title="PROGEPE – Casa 4">
+                Unidade Centro de Atenção à Saúde – Casa 4 (PROGEPE)
+              </a>
+              <div class="result-url">progepe.ufpr.br/progepe/caiss/casa4</div>
+              <p class="result-snippet">Serviços e orientações da Casa 4 da Coordenação de Atenção Integral à Saúde.</p>
+            </li>
+            <!-- Secretaria Online (SEPT) -->
+            <li class="result-item">
+              <a class="result-title" href="http://200.236.3.198:28080/secretariaonline/Home" target="_blank" rel="noopener noreferrer" title="Secretaria On-line do SEPT - Login">
+                Secretaria On-line do SEPT – Login
+              </a>
+              <div class="result-url">200.236.3.198:28080/secretariaonline/Home</div>
+              <p class="result-snippet">Entrega do TCC, Declaração de Matrícula, matrículas em outro curso/turno, destrancamento, quebra de pré-requisito e equivalência de disciplina.</p>
             </li>
           </ol>
         </aside>
@@ -96,6 +198,29 @@
                 <!-- preenchido via JS -->
             </ul>
         </div>
+        <div id="userPopover" class="user-popover hidden" role="dialog" aria-label="Conta do usuário">
+          <button class="user-popover__close" id="userPopoverClose" aria-label="Fechar">×</button>
+          <div class="user-card">
+            <h4 class="user-card__title">Olá usuário A!</h4>
+            <div class="user-card__avatar">
+              <span class="user-avatar user-avatar--lg">A</span>
+              <span class="user-card__camera" aria-hidden="true"></span>
+            </div>
+            <button class="user-card__settings"><i class="fa fa-cog"></i> Site Settings</button>
+            <div class="user-card__chips">
+              <span class="chip">GRR20240734</span>
+              <span class="chip">IRA: 94.8</span>
+            </div>
+            <div class="user-card__actions">
+              <!-- Switch de tema (usa ./assets/moon-stars.svg e ./assets/sun.svg) -->
+              <div id="switch" class="no-darken" aria-label="Alternar tema">
+                <button type="button" id="themeToggleBtn"></button>
+                <span></span>
+              </div>
+              <button class="btn btn-ghost" id="btnSignOut"><i class="fa fa-sign-out"></i> Sign out</button>
+            </div>
+          </div>
+        </div>
 
         <div class="spin-container">
             <div class="central-circle"><a href="#"><span class="words"><i class="fa fa-globe fa-spin"></i></span></a>
@@ -107,7 +232,7 @@
                   data-category="transporte"
                   data-label="Transporte Intercampi"
                   data-favorite="true">
-                  <a href="#" title="Transporte Intercampi">
+                  <a href="https://proad.ufpr.br/centran/sobre/onibus-intercampi/" target="_blank" rel="noopener noreferrer" title="Transporte Intercampi">
                     <img class="circle-img"
                          src="https://i.postimg.cc/WzLsCwtW/Brasoes-UFPR.png"
                          alt="Transporte Intercampi">
@@ -118,7 +243,7 @@
                   class="small-circle cat-alimentacao"
                   data-category="alimentacao"
                   data-label="Restaurante Universitário">
-                  <a href="#" title="Restaurante Universitário">
+                  <a href="https://proad.ufpr.br/ru/" target="_blank" rel="noopener noreferrer" title="Restaurante Universitário (RU)">
                     <img class="circle-img"
                          src="https://i.postimg.cc/bN3SDJvC/Screenshot-10.png"
                          alt="Restaurante Universitário">
@@ -129,7 +254,7 @@
                   class="small-circle cat-estagio"
                   data-category="estagio"
                   data-label="Portal de Estágios">
-                  <a href="#" title="Portal de Estágios">
+                  <a href="https://sistemas.ufpr.br/" target="_blank" rel="noopener noreferrer" title="Portal de Estágios">
                     <img class="circle-img"
                          src="https://i.postimg.cc/Y0xGx2zS/s.png"
                          alt="Portal de Estágios">
@@ -140,7 +265,7 @@
                   class="small-circle cat-biblioteca"
                   data-category="biblioteca"
                   data-label="Biblioteca / Catálogo">
-                  <a href="#" title="Biblioteca / Catálogo">
+                  <a href="https://bibliotecas.ufpr.br/" target="_blank" rel="noopener noreferrer" title="Sistema de Bibliotecas (SiBi)">
                     <img class="circle-img"
                          src="https://i.postimg.cc/159N36yV/images-1-removebg-preview.png"
                          alt="Biblioteca / Catálogo">
@@ -151,7 +276,7 @@
                   class="small-circle cat-secretaria"
                   data-category="secretaria"
                   data-label="Secretaria Online">
-                  <a href="#" title="Secretaria Online">
+                  <a href="http://200.236.3.198:28080/secretariaonline/Home" target="_blank" rel="noopener noreferrer" title="Secretaria On-line do SEPT - Login">
                     <img class="circle-img"
                          src="https://i.postimg.cc/XqWBFBFh/images-1.png"
                          alt="Secretaria Online">
@@ -159,6 +284,8 @@
                 </div>
             </div>
         </div>
+        <!-- Botão flutuante de ajuda/tour -->
+         <button id="helpFab" class="help-fab" aria-label="Ajuda e tour">?</button>
     </body>
 
 </html>

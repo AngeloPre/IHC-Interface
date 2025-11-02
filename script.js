@@ -1,3 +1,4 @@
+import { Boarding } from "https://unpkg.com/boarding.js/dist/main.js";
 (function ($) {
     const blocks     = $("#rotator div").get();
     const increase   = Math.PI * 2 / blocks.length;
@@ -77,10 +78,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuBtn       = document.getElementById('appMenuBtn');
   const favsBtn       = document.getElementById('favsBtn');
   const favsListEl    = document.getElementById('favsList');
+  const sideResults   = document.getElementById('sideResults');
+  const signInBtn     = document.getElementById('signInBtn');
+  const userBtn       = document.getElementById('userBtn');
+  const userPopover   = document.getElementById('userPopover');
+  const userPopoverClose = document.getElementById('userPopoverClose');
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const signOutBtn    = document.getElementById('btnSignOut');
+  const helpFab       = document.getElementById('helpFab');
+  const ufprImg       = document.querySelector('.ufpr');
+  const UFPR_LIGHT_SRC = 'https://i.postimg.cc/WzLsCwtW/Brasoes-UFPR.png';
+  const UFPR_DARK_SRC  = 'https://i.postimg.cc/hGx5CjcV/ufpr-logo.png'; // logo clara para fundo escuro
 
   const hideAll = () => {
     filterPopover.classList.add('hidden');
     favsPopover.classList.add('hidden');
+    userPopover.classList.add('hidden');
+    if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
   };
   const toggle = (el) => {
     const willShow = el.classList.contains('hidden');
@@ -104,14 +118,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function setSignedInUI(isSignedIn) {
+    if (isSignedIn) {
+      signInBtn && signInBtn.classList.add('hidden');
+      userBtn && userBtn.classList.remove('hidden');
+    } else {
+      userBtn && userBtn.classList.add('hidden');
+      signInBtn && signInBtn.classList.remove('hidden');
+      hideAll();
+    }
+    defineTourSteps(); // mantém o tutorial coerente com o estado atual
+  }
+  // Ação do Sign in (simulado)
+  if (signInBtn) {
+    signInBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      setSignedInUI(true);
+      // abre o popover ao logar
+      positionUserPopover();
+    });
+  }
+  // Ação do Sign out
+  if (signOutBtn) {
+    signOutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      setSignedInUI(false);
+    });
+  }
+
+  function positionUserPopover() {
+    if (!userBtn || !userPopover) return;
+    const r = userBtn.getBoundingClientRect();
+    // mostra para medir
+    userPopover.classList.remove('hidden');
+    const width = userPopover.offsetWidth;
+    // posiciona abaixo alinhado à direita do botão
+    userPopover.style.top  = `${r.bottom + 8 + window.scrollY}px`;
+    userPopover.style.left = `${r.right - width + window.scrollX}px`;
+  }
+  if (userBtn) {
+    userBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const willOpen = userPopover.classList.contains('hidden');
+      hideAll();
+      if (willOpen) {
+        userBtn.setAttribute('aria-expanded', 'true');
+        positionUserPopover();
+      }
+    });
+  }
+  if (userPopoverClose) {
+    userPopoverClose.addEventListener('click', () => hideAll());
+  }
+
   // Fechar ao clicar fora
   document.addEventListener('click', (e) => {
     const inside =
       e.target.closest('#filterPopover') ||
       e.target.closest('#favsPopover')   ||
+      e.target.closest('#userPopover')   ||
       e.target.closest('#appMenuBtn')    ||
-      e.target.closest('#favsBtn');
+      e.target.closest('#favsBtn')       ||
+      e.target.closest('#userBtn');
     if (!inside) hideAll();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideAll();
   });
 
   // Filtro por categoria
@@ -138,10 +211,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const a   = el.querySelector('a');
         const img = el.querySelector('img');
         const li  = document.createElement('li');
+        const isLight = root.classList.contains('light');
+        let thumbSrc = img ? img.src : '';
+        try {
+          if (!isLight && /Brasoes-UFPR\.png/i.test(thumbSrc)) {
+            thumbSrc = UFPR_DARK_SRC; // usa logo clara no dark
+          }
+        } catch(_) {
+          /* no-op */
+        }
         li.className = 'popover-item';
         li.innerHTML = `
           <a href="${a ? a.href : '#'}" class="popover-link">
-            <img src="${img ? img.src : ''}" alt="" class="popover-thumb">
+            <img src="${thumbSrc}" alt="" class="popover-thumb">
             <span>${el.dataset.label || 'Favorito'}</span>
           </a>`;
         favsListEl.appendChild(li);
@@ -160,15 +242,112 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const closeToast = (el) => el && (el.style.display = 'none');
 
+  // === TOUR COM OVERLAY ESCURECIDO (padrão) ===
+  const boarding = new Boarding();
+  function defineTourSteps() {
+    const base = [
+      {
+        element: '#sideResults',
+        popover: {
+          title: 'Resultados da pesquisa',
+          description: 'Aqui você encontra os resultados e atalhos para sistemas e serviços. Role a lista para ver mais.',
+          prefferedPosition: 'right'
+        }
+      },
+      {
+        element: '#favsBtn',
+        popover: {
+          title: 'Favoritos',
+          description: 'Clique na estrela para abrir seus itens marcados como favorito.',
+          prefferedPosition: 'bottom'
+        }
+      },
+      {
+        element: '#appMenuBtn',
+        popover: {
+          title: 'Filtros / Categorias',
+          description: 'Use o ícone de grade para filtrar por categoria (Transporte, RU, Biblioteca, etc.).',
+          prefferedPosition: 'bottom'
+        }
+      }
+    ];
+    // Passo 4 depende do estado: Sign in (deslogado) ou Avatar (logado)
+    const signedOut = !userBtn || userBtn.classList.contains('hidden');
+    base.push(
+      signedOut
+        ? {
+            element: '#signInBtn',
+            popover: {
+              title: 'Entrar no Portal',
+              description: 'Use o botão “Sign in” para acessar seus atalhos e preferências.',
+              prefferedPosition: 'left'
+            }
+          }
+        : {
+            element: '#userBtn',
+            popover: {
+              title: 'Conta e Tema',
+              description: 'Clique no seu avatar para abrir o menu e alternar entre dark e light mode.',
+              prefferedPosition: 'left'
+            }
+          }
+    );
+    boarding.defineSteps(base);
+  }
+  defineTourSteps();
+ 
+  const startTour = () => {
+    // fecha popovers para não “competirem” com o highlight
+    hideAll();
+    closeToast(toastHelp);
+    boarding.start();
+  };
+ 
+  // Botão do toast inicia o tour
   if (btnTour) {
-    btnTour.addEventListener('click', () => {
-      alert('Tour rápido: use filtros no ícone de grade, clique nas esferas por categoria e use a estrela para ver seus favoritos.');
-      closeToast(toastHelp);
+    btnTour.addEventListener('click', (e) => {
+      e.preventDefault();
+      startTour();
+    });
+  }
+  // Botão flutuante de ajuda
+  if (helpFab) {
+    helpFab.addEventListener('click', (e) => {
+      e.preventDefault();
+      startTour();
     });
   }
   if (btnNoHelp) {
     btnNoHelp.addEventListener('click', () => closeToast(toastHelp));
   }
+
+  // ===== Tema (dark/light) =====
+  const root = document.documentElement; // usa .light no <html>
+  // define ícone inicial (escuro = lua)
+  root.style.setProperty('--button-icon', 'url(./assets/moon-stars.svg)');
+  function applyLogoForTheme(){
+    if (!ufprImg) return;
+    const isLight = root.classList.contains('light');
+    ufprImg.src = isLight ? UFPR_LIGHT_SRC : UFPR_DARK_SRC;
+  }
+  function toggleMode() {
+    root.classList.toggle('light');
+    const isLight = root.classList.contains('light');
+    root.style.setProperty('--button-icon', isLight ? 'url(./assets/sun.svg)' : 'url(./assets/moon-stars.svg)');
+    applyLogoForTheme();
+  }
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleMode();
+      if (typeof window.refreshFavs === 'function') {
+        window.refreshFavs();
+      }
+    });
+  }
+
+  setSignedInUI(false);
+  applyLogoForTheme();
 
   if (btnRuFav) {
     btnRuFav.addEventListener('click', () => {
@@ -186,4 +365,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (btnRuClose) btnRuClose.addEventListener('click', () => closeToast(toastRU));
+  
+  // === Busca: filtrar apenas pelo TÍTULO dos resultados laterais ===
+  // Observação: a busca ignora acentos e diferenciação de maiúsculas/minúsculas.
+  const searchInput = document.querySelector('.searchbar');
+  if (searchInput && sideResults) {
+    const headerEl = sideResults.querySelector('.side-results__header');
+
+    const normalize = (s) =>
+      (s || '')
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // remove diacríticos
+        .toLowerCase();
+
+    const applyFilter = (rawQuery) => {
+      const q = normalize(rawQuery);
+      let visible = 0;
+
+      sideResults.querySelectorAll('.result-item').forEach((li) => {
+        const titleEl = li.querySelector('.result-title');
+        const title = normalize(titleEl ? titleEl.textContent : '');
+        const match = !q || title.includes(q);
+        li.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+
+      if (headerEl) {
+        headerEl.innerHTML = !q
+          ? 'Resultados para: <strong>Serviços essenciais do estudante UFPR</strong>'
+          : `Resultados (${visible}) para: <strong>${rawQuery}</strong>`;
+      }
+    };
+
+    searchInput.addEventListener('input', (e) => applyFilter(e.target.value));
+    if (searchInput.value) applyFilter(searchInput.value); // aplica se vier com valor preenchido
+  }
 });
