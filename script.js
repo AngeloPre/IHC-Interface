@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         li.className = 'popover-item';
         li.innerHTML = `
-          <a href="${a ? a.href : '#'}" class="popover-link">
+          <a href="${a ? a.href : '#'}" class="popover-link" target="_blank" rel="noopener noreferrer">
             <img src="${thumbSrc || getDefaultThumb()}" alt="" class="popover-thumb">
             <span>${el.dataset.label || 'Favorito'}</span>
           </a>`;
@@ -270,11 +270,16 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionFavs.forEach((meta) => {
       const li  = document.createElement('li');
       li.className = 'popover-item';
-      const thumb = meta.thumb || (isRU(meta.href, meta.label)
-        ? 'https://i.postimg.cc/bN3SDJvC/Screenshot-10.png'
-        : getDefaultThumb());
+      // recalcula o thumb conforme o TEMA quando for o brasão (dinâmico)
+      let thumb = meta.thumb;
+      const isUFPRThumb = thumb === UFPR_LIGHT_SRC || thumb === UFPR_DARK_SRC;
+      if (!thumb || isUFPRThumb) {
+        thumb = isRU(meta.href, meta.label)
+          ? 'https://i.postimg.cc/bN3SDJvC/Screenshot-10.png'
+          : getDefaultThumb();
+      }
       li.innerHTML = `
-        <a href="${meta.href}" class="popover-link">
+        <a href="${meta.href}" class="popover-link" target="_blank" rel="noopener noreferrer">
           <img src="${thumb}" alt="" class="popover-thumb">
           <span>${meta.label || 'Favorito'}</span>
         </a>`;
@@ -336,54 +341,83 @@ document.addEventListener('DOMContentLoaded', () => {
   // === TOUR COM OVERLAY ESCURECIDO (padrão) ===
   const boarding = new Boarding();
   function defineTourSteps() {
-    const base = [
-      {
-        element: '#sideResults',
-        popover: {
-          title: 'Resultados da pesquisa',
-          description: 'Aqui você encontra os resultados e atalhos para sistemas e serviços. Role a lista para ver mais.',
-          prefferedPosition: 'right'
-        }
-      },
-      {
-        element: '#favsBtn',
-        popover: {
-          title: 'Favoritos',
-          description: 'Clique na estrela para abrir seus itens marcados como favorito.',
-          prefferedPosition: 'bottom'
-        }
-      },
-      {
-        element: '#appMenuBtn',
-        popover: {
-          title: 'Filtros / Categorias',
-          description: 'Use o ícone de grade para filtrar por categoria (Transporte, RU, Biblioteca, etc.).',
-          prefferedPosition: 'bottom'
-        }
+    const steps = [];
+
+    // 1) Side results
+    steps.push({
+      element: '#sideResults',
+      popover: {
+        title: 'Resultados da pesquisa',
+        description: 'Aqui você encontra os resultados e atalhos para sistemas e serviços. Role a lista para ver mais.',
+        prefferedPosition: 'right'
       }
-    ];
-    // Passo 4 depende do estado: Sign in (deslogado) ou Avatar (logado)
+    });
+
+    // 2) Search bar
+    steps.push({
+      element: '.searchbar',
+      popover: {
+        title: 'Barra de busca',
+        description: 'Digite aqui para filtrar, em tempo real, os <strong>títulos</strong> dos resultados da lateral. Dica: pressione <kbd>/</kbd> para focar.',
+        prefferedPosition: 'bottom'
+      }
+    });
+
+    // 3) Conta (varia conforme estado)
     const signedOut = !userBtn || userBtn.classList.contains('hidden');
-    base.push(
-      signedOut
-        ? {
-            element: '#signInBtn',
-            popover: {
-              title: 'Entrar no Portal',
-              description: 'Use o botão “Sign in” para acessar seus atalhos e preferências.',
-              prefferedPosition: 'left'
-            }
-          }
-        : {
-            element: '#userBtn',
-            popover: {
-              title: 'Conta e Tema',
-              description: 'Clique no seu avatar para abrir o menu e alternar entre dark e light mode.',
-              prefferedPosition: 'left'
-            }
-          }
-    );
-    boarding.defineSteps(base);
+    if (signedOut) {
+      steps.push({
+        element: '#signInBtn',
+        popover: {
+          title: 'Sua conta',
+          description: 'Use “Sign in” para acessar seu avatar e preferências. Depois do login, abra o menu da conta para entrar em <strong>Site Settings</strong>, onde é possível mudar a <em>linguagem</em> e <strong>pausar as animações</strong> se estiverem distraindo.',
+          prefferedPosition: 'left'
+        }
+      });
+    } else {
+      steps.push({
+        element: '#userBtn',
+        popover: {
+          title: 'Conta e preferências',
+          description: 'Clique no avatar para abrir o menu. Em <strong>Site Settings</strong> você pode trocar a <em>linguagem</em> e <strong>pausar as animações</strong> do site. Aqui também é possível alternar entre <em>dark</em>/<em>light</em>.',
+          prefferedPosition: 'left'
+        }
+      });
+    }
+
+    // 4) Favoritos
+    steps.push({
+      element: '#favsBtn',
+      popover: {
+        title: 'Favoritos',
+        description: 'Clique na estrela para ver seus itens marcados. Dica: ao visitar um link, um <em>toast</em> perguntará se você quer adicionar aos favoritos.',
+        prefferedPosition: 'bottom'
+      }
+    });
+
+    // 5) Grupos / Categorias
+    steps.push({
+      element: '#appMenuBtn',
+      popover: {
+        title: 'Grupos / Categorias',
+        description: 'Use o ícone de grade para filtrar por categoria (Transporte, RU, Biblioteca, Secretaria, etc.).',
+        prefferedPosition: 'bottom'
+      }
+    });
+
+    // 6) Help (final)
+    if (document.getElementById('helpFab')) {
+      steps.push({
+        element: '#helpFab',
+        popover: {
+          title: 'Precisa de ajuda?',
+          description: 'No canto inferior direito você pode reabrir este guia. Há duas opções: <strong>Tutorial para iniciantes</strong> (refaz o tour) e <strong>Atalhos para veteranos</strong> (lista de atalhos do teclado).',
+          prefferedPosition: 'left'
+        }
+      });
+    }
+
+    boarding.defineSteps(steps);
   }
   defineTourSteps();
  
